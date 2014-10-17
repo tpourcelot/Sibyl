@@ -78,14 +78,14 @@ class TestLauncher(object):
         # Restore memory
         if reset_mem:
             self.jitter.vm.reset_memory_page_pool()
-            for addr, metadata in self.mem.items():
+            for addr, metadata in self.vm_mem.items():
                 self.jitter.vm.add_memory_page(addr,
                                                   metadata["access"],
                                                   metadata["data"])
 
         # Restore registers
         self.jitter.cpu.init_regs()
-        self.jitter.cpu.set_gpreg(self.regs)
+        self.jitter.cpu.set_gpreg(self.vm_regs)
 
     @staticmethod
     def _code_sentinelle(jitter):
@@ -112,7 +112,7 @@ class TestLauncher(object):
             self.jitter.vm.set_alarm()
 
     def init_abi(self, abicls):
-        ira = self.machine.ira()
+        ira = self.machine.ira(self.machine.mn)
         self.abi = abicls(self.jitter, ira)
 
     def reset_state(self, reset_mem=True):
